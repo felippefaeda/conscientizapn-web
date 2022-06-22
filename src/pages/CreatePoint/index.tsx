@@ -29,14 +29,16 @@ const CreatePoint = () => {
     const [cities, setCities] = useState<string[]>([]);
 
     const [formData, setFormData] = useState({
-        name: '',
+        nome: '',
         email: '',
         whatsapp: '',
+        endereco:'',
+        descricao:"",
 
     })
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [selectedUf, setSelectedUf] = useState('0');
-    const [selectedCity, setSelectedCity] = useState('0');
+    //const [selectedUf, setSelectedUf] = useState('0');
+    //const [selectedCity, setSelectedCity] = useState('0');
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     
     const navigate = useNavigate();
@@ -56,34 +58,40 @@ const CreatePoint = () => {
         })
     }, []);
 
-    useEffect(() => {
-        if (selectedUf === '0') {
-            return;
-        }
+    // useEffect(() => {
+    //     if (selectedUf === '0') {
+    //         return;
+    //     }
 
-        axios
-            .get<IBGECityResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
-            .then(response => {
-                const cityNames = response.data.map(city => city.nome);
+    //     axios
+    //         .get<IBGECityResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
+    //         .then(response => {
+    //             const cityNames = response.data.map(city => city.nome);
 
 
-                setCities(cityNames);
-            });
-    }, [selectedUf]);
+    //             setCities(cityNames);
+    //         });
+    // }, [selectedUf]);
 
-    function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
-        const uf = event.target.value;
+    // function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
+    //     const uf = event.target.value;
 
-        setSelectedUf(uf);
-    }
+    //     setSelectedUf(uf);
+    // }
 
-    function handleSelectedCity(event: ChangeEvent<HTMLSelectElement>) {
-        const city = event.target.value;
+    // function handleSelectedCity(event: ChangeEvent<HTMLSelectElement>) {
+    //     const city = event.target.value;
 
-        setSelectedCity(city);
-    }
+    //     setSelectedCity(city);
+    // }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target;
+
+        setFormData({ ...formData, [name]: value })
+    }
+
+    function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
         const { name, value } = event.target;
 
         setFormData({ ...formData, [name]: value })
@@ -131,18 +139,18 @@ const CreatePoint = () => {
     async function handleSubmit(event: FormEvent){
         event.preventDefault();
 
-        const { name, email, whatsapp } = formData;
-        const uf = selectedUf;
-        const city = selectedCity;
+        const { nome, email, whatsapp, endereco, descricao } = formData;
+        // const uf = selectedUf;
+        // const city = selectedCity;
         const [latitude, longitude] = selectedPosition;
         const items = selectedItems;
 
         const data = {
-            name,
+            nome,
             email,
             whatsapp,
-            uf,
-            city,
+            endereco,
+            descricao,
             latitude,
             longitude,
             items
@@ -168,7 +176,7 @@ const CreatePoint = () => {
             </header>
 
             <form onSubmit={handleSubmit}>
-                <h1>Cadastro do <br /> ponto de coleta</h1>
+                <h1>Cadastro do PEV<br />(Ponto de coleta seletiva)</h1>
 
                 <fieldset>
                     <legend>
@@ -221,7 +229,26 @@ const CreatePoint = () => {
                         <LocationMarker />
                     </MapContainer>
 
-                    <div className="field-group">
+                    <div className="field">
+                        <label htmlFor="name">Endereço</label>
+                        <input
+                            type="text"
+                            name="endereco"
+                            id="endereco"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label htmlFor="descricao">Descricao</label>
+                        <textarea
+                            name="descricao"
+                            id="descricao"
+                            onChange={handleTextAreaChange}
+                        />
+                    </div>
+
+                    {/* <div className="field-group">
                         <div className="field">
                             <label htmlFor="uf">Estado (UF)</label>
                             <select name="uf" id="uf"
@@ -248,7 +275,7 @@ const CreatePoint = () => {
                                 ))}
                             </select>
                         </div>
-                    </div>
+                    </div> */}
                 </fieldset>
 
                 <fieldset>
