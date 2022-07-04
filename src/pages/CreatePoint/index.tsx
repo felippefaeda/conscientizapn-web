@@ -25,8 +25,8 @@ interface IBGECityResponse {
 
 const CreatePoint = () => {
     const [items, setItems] = useState<Item[]>([]);
-    const [ufs, setUfs] = useState<string[]>([]);
-    const [cities, setCities] = useState<string[]>([]);
+    //const [ufs, setUfs] = useState<string[]>([]);
+    //const [cities, setCities] = useState<string[]>([]);
 
     const [formData, setFormData] = useState({
         nome: '',
@@ -50,13 +50,13 @@ const CreatePoint = () => {
         })
     }, []);
 
-    useEffect(() => {
-        axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
-            const ufInitials = response.data.map(uf => uf.sigla);
+    // useEffect(() => {
+    //     axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
+    //         const ufInitials = response.data.map(uf => uf.sigla);
 
-            setUfs(ufInitials);
-        })
-    }, []);
+    //         setUfs(ufInitials);
+    //     })
+    // }, []);
 
     // useEffect(() => {
     //     if (selectedUf === '0') {
@@ -240,7 +240,7 @@ const CreatePoint = () => {
                     </div>
 
                     <div className="field">
-                        <label htmlFor="descricao">Descricao</label>
+                        <label htmlFor="descricao">Descriçao</label>
                         <textarea
                             name="descricao"
                             id="descricao"
