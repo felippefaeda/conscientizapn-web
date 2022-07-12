@@ -187,8 +187,8 @@ const CreatePoint = () => {
                         <label htmlFor="name">Nome da entidade</label>
                         <input
                             type="text"
-                            name="name"
-                            id="name"
+                            name="nome"
+                            id="nome"
                             onChange={handleInputChange}
                         />
                     </div>
