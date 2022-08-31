@@ -1,31 +1,54 @@
 import React from "react";
-import { FiLogIn } from 'react-icons/fi';
 import {Link} from 'react-router-dom';
 
 import './styles.css';
 
-import logo from '../../assets/logo.svg';
-
+import logo from '../../assets/icon.png';
+import coletas from '../../assets/garbage-truck.png';
+import pev from '../../assets/trash-can.png';
+import fiscal from '../../assets/detetive.png';
+import logoifmg from '../../assets/campus-ponte-nova.png';
+ 
 
 const Home = () => {
   return (
     <div id="page-home">
       <div className="content">
         <header>
-          <img src={logo} alt="Ecoleta " />
+          <img src={logo} alt="Conscientiza PN" />
+          <p>Conscientiza PN</p>
         </header>
 
-        <main>
-          <h1>Seu marketplace de coleta de resíduos</h1>
-          <p>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.</p>
+        <div className="body-page">
+          <main>
+            <h1>Projeto Conscientiza PN</h1>
+            <p>
+              Uma plataforma de apoio e fiscalização ao descarte {'\n'}
+              de resíduos sólidos para a cidade de Ponte Nova
+            </p>
 
-          <Link to="/create-point">
-            <span>
-              <FiLogIn />
-            </span>
-            <strong>Cadastre um ponto de coleta</strong>
-          </Link>
-        </main>
+            <div className="menus">
+              <Link to="/create-point">
+                <img src={coletas} alt="Cadastro de Coletas de Lixo" />
+                <strong>Coletas</strong>
+              </Link>
+
+              <Link to="/create-point">
+                <img src={pev} alt="Ponto de Entrega Voluntára" />
+                <strong>PEV</strong>
+              </Link>
+
+              <Link to="/create-point">
+                <img src={fiscal} alt="Cidadão Fiscal" />
+                <strong>Cidadão Fiscal</strong>
+              </Link>
+            </div>
+          </main>
+
+          <div className="logos">
+            <img src={logoifmg} alt="Conscientiza PN" />
+          </div>
+        </div>
 
       </div>
     </div>
