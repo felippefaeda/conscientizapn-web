@@ -79,7 +79,7 @@
     margin-bottom: 24px;
   }
   
-  #page-coleta form .field input[type=text], 
+  #page-coleta form .field input[type=time], 
   #page-coleta form .field textarea,
   #page- form .field input[type=email],
   #page-coleta form .field input[type=number] {
