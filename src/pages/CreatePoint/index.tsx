@@ -1,6 +1,6 @@
 import logo from '../../assets/logo.svg';
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import axios from 'axios';
@@ -23,10 +23,14 @@ interface IBGECityResponse {
     nome: string;
 }
 
+type Params = {
+    pointId: string;
+  };
+
 const CreatePoint = () => {
     const [items, setItems] = useState<Item[]>([]);
-    //const [ufs, setUfs] = useState<string[]>([]);
-    //const [cities, setCities] = useState<string[]>([]);
+
+    let { pointId } = useParams<Params>();
 
     const [formData, setFormData] = useState({
         nome: '',
@@ -37,53 +41,15 @@ const CreatePoint = () => {
 
     })
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    //const [selectedUf, setSelectedUf] = useState('0');
-    //const [selectedCity, setSelectedCity] = useState('0');
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     
-    const navigate = useNavigate();
-    
+    const navigate = useNavigate();    
 
-    useEffect(() => {
+    useEffect(() => { 
         api.get('items').then(response => {
             setItems(response.data);
-        })
+        });
     }, []);
-
-    // useEffect(() => {
-    //     axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
-    //         const ufInitials = response.data.map(uf => uf.sigla);
-
-    //         setUfs(ufInitials);
-    //     })
-    // }, []);
-
-    // useEffect(() => {
-    //     if (selectedUf === '0') {
-    //         return;
-    //     }
-
-    //     axios
-    //         .get<IBGECityResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
-    //         .then(response => {
-    //             const cityNames = response.data.map(city => city.nome);
-
-
-    //             setCities(cityNames);
-    //         });
-    // }, [selectedUf]);
-
-    // function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
-    //     const uf = event.target.value;
-
-    //     setSelectedUf(uf);
-    // }
-
-    // function handleSelectedCity(event: ChangeEvent<HTMLSelectElement>) {
-    //     const city = event.target.value;
-
-    //     setSelectedCity(city);
-    // }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
@@ -109,8 +75,6 @@ const CreatePoint = () => {
     }
 
     function LocationMarker() {
-        // const [position, setPosition] = useState<[number, number]>([0, 0]);
-
         useMapEvents({
             click(e: LeafletMouseEvent) {
                 setSelectedPosition([e.latlng.lat, e.latlng.lng]);
@@ -140,8 +104,6 @@ const CreatePoint = () => {
         event.preventDefault();
 
         const { nome, email, whatsapp, endereco, descricao } = formData;
-        // const uf = selectedUf;
-        // const city = selectedCity;
         const [latitude, longitude] = selectedPosition;
         const items = selectedItems;
 
@@ -189,6 +151,7 @@ const CreatePoint = () => {
                             type="text"
                             name="nome"
                             id="nome"
+                            value="Teste"
                             onChange={handleInputChange}
                         />
                     </div>
