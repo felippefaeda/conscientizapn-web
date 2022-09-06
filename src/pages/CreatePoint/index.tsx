@@ -3,7 +3,6 @@ import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
 import api from '../../services/api';
 
@@ -11,24 +10,40 @@ import './style.css';
 
 interface Item {
     id: number;
-    title: string;
+    title: string; 
     image_url: string;
-}
-
-interface IBGEUFResponse {
-    sigla: string;
-}
-
-interface IBGECityResponse {
-    nome: string;
 }
 
 type Params = {
     pointId: string;
-  };
+};
+
+interface Items{
+    id: number;
+    image: string;
+    title: string;
+}
+
+interface Point{
+    id: number;
+    imagem: string;
+    nome: string;
+    email: string;
+    whatsapp: string;
+    latitude: number;
+    longitude: number;
+    endereco: string;
+    descricao: string;
+}
+
+interface Data{
+    point: Point;
+    items: Items[];
+}
 
 const CreatePoint = () => {
     const [items, setItems] = useState<Item[]>([]);
+    const [data, setData] = useState<Data>({} as Data);
 
     let { pointId } = useParams<Params>();
 
@@ -38,17 +53,28 @@ const CreatePoint = () => {
         whatsapp: '',
         endereco:'',
         descricao:"",
-
-    })
+    });
+    
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     
     const navigate = useNavigate();    
 
     useEffect(() => { 
+        async function loadPointId() {
+            api.get(`points/${pointId}`).then(response => {
+                setData(response.data); 
+                alert(data.point.nome);
+            });
+        }   
+
         api.get('items').then(response => {
             setItems(response.data);
         });
+
+        if (pointId !== undefined){
+            loadPointId();
+        }
     }, []);
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -61,17 +87,6 @@ const CreatePoint = () => {
         const { name, value } = event.target;
 
         setFormData({ ...formData, [name]: value })
-    }
-
-    function handleMapClick(event: LeafletMouseEvent) {
-        setSelectedPosition([
-            event.latlng.lat,
-            event.latlng.lng,
-        ])
-    }
-
-    function handleTeste() {
-        console.log("Teste");
     }
 
     function LocationMarker() {
@@ -151,7 +166,7 @@ const CreatePoint = () => {
                             type="text"
                             name="nome"
                             id="nome"
-                            value="Teste"
+                            value="teste"
                             onChange={handleInputChange}
                         />
                     </div>
