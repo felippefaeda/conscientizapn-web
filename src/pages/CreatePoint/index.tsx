@@ -8,23 +8,23 @@ import api from '../../services/api';
 
 import './style.css';
 
-interface Item {
-    id: number;
-    title: string; 
-    image_url: string;
-}
-
 type Params = {
     pointId: string;
 };
 
-interface Items{
+interface Item {
+    id: number;
+    title: string;
+    image_url: string;    
+}
+
+interface PointItem {
     id: number;
     image: string;
     title: string;
 }
 
-interface Point{
+interface Point {
     id: number;
     imagem: string;
     nome: string;
@@ -36,44 +36,47 @@ interface Point{
     descricao: string;
 }
 
-interface Data{
-    point: Point;
-    items: Items[];
-}
-
 const CreatePoint = () => {
-    const [items, setItems] = useState<Item[]>([]);
-    const [data, setData] = useState<Data>({} as Data);
+    const [items, setItems] = useState<Item[]>([]);  
 
     let { pointId } = useParams<Params>();
 
     const [formData, setFormData] = useState({
-        nome: '',
+        nome: 'Teste',
         email: '',
         whatsapp: '',
-        endereco:'',
-        descricao:"",
+        endereco: '',
+        descricao: "",
     });
-    
+
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
-    
-    const navigate = useNavigate();    
 
-    useEffect(() => { 
-        async function loadPointId() {
-            api.get(`points/${pointId}`).then(response => {
-                setData(response.data); 
-                alert(data.point.nome);
-            });
-        }   
+    const navigate = useNavigate();
 
+    const [dadosPoint, setDadosPoint] = useState<Point>({} as Point);
+
+    useEffect(() => {
         api.get('items').then(response => {
             setItems(response.data);
         });
 
         if (pointId !== undefined){
-            loadPointId();
+            api.get(`points/${pointId}`).then((response) => {
+                setDadosPoint(response.data.point);
+
+                setSelectedPosition([response.data.point.latitude, response.data.point.longitude]);
+
+                const vetItems = [ 0 ];
+
+                response.data.items.map((item: PointItem) => {
+                    vetItems.push(item.id);
+                });
+
+                setSelectedItems(vetItems);
+            }).catch(function (error) {
+                alert(error);
+            });
         }
     }, []);
 
@@ -115,10 +118,14 @@ const CreatePoint = () => {
 
     }
 
-    async function handleSubmit(event: FormEvent){
+    async function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
-        const { nome, email, whatsapp, endereco, descricao } = formData;
+        if (pointId !== undefined){
+            alert(formData.nome);
+        }
+
+        /* const { nome, email, whatsapp, endereco, descricao } = formData;
         const [latitude, longitude] = selectedPosition;
         const items = selectedItems;
 
@@ -134,6 +141,7 @@ const CreatePoint = () => {
         };
 
         await api.post('points', data);
+        */
 
         alert('Ponto de coleta criado!');
 
@@ -166,7 +174,6 @@ const CreatePoint = () => {
                             type="text"
                             name="nome"
                             id="nome"
-                            value="teste"
                             onChange={handleInputChange}
                         />
                     </div>
@@ -178,6 +185,7 @@ const CreatePoint = () => {
                                 type="email"
                                 name="email"
                                 id="email"
+                                value={dadosPoint.email}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -187,6 +195,7 @@ const CreatePoint = () => {
                                 type="text"
                                 name="whatsapp"
                                 id="whatsapp"
+                                value={dadosPoint.whatsapp}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -213,6 +222,7 @@ const CreatePoint = () => {
                             type="text"
                             name="endereco"
                             id="endereco"
+                            value={dadosPoint.endereco}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -222,6 +232,7 @@ const CreatePoint = () => {
                         <textarea
                             name="descricao"
                             id="descricao"
+                            value={dadosPoint.descricao}
                             onChange={handleTextAreaChange}
                         />
                     </div>
