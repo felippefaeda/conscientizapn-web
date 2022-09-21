@@ -262,6 +262,20 @@ const CreatePoint = () => {
 
                 <fieldset>
                     <legend>
+                        <h2>Imagem</h2>
+                    </legend>
+                    <div className="field">
+                        <img src={`https://conscientizapn.s3.sa-east-1.amazonaws.com/PEV/${dadosPoint.imagem}.jpeg`} alt="" />
+                        <button
+                            type="button"
+                        >
+                            Upload Imagem
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>
                         <h2>Ítems de coleta</h2>
                         <span>Selecione um ou mais itens abaixo</span>
                     </legend>
