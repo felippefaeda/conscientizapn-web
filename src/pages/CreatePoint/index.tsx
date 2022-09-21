@@ -41,13 +41,13 @@ const CreatePoint = () => {
 
     let { pointId } = useParams<Params>();
 
-    const [formData, setFormData] = useState({
+    /* const [formData, setFormData] = useState({
         nome: 'Teste',
         email: '',
         whatsapp: '',
         endereco: '',
         descricao: "",
-    });
+    }); */
 
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
@@ -83,13 +83,13 @@ const CreatePoint = () => {
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
 
-        setFormData({ ...formData, [name]: value })
+        setDadosPoint({ ...dadosPoint, [name]: value })
     }
 
     function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
         const { name, value } = event.target;
 
-        setFormData({ ...formData, [name]: value })
+        setDadosPoint({ ...dadosPoint, [name]: value })
     }
 
     function LocationMarker() {
@@ -122,28 +122,49 @@ const CreatePoint = () => {
         event.preventDefault();
 
         if (pointId !== undefined){
-            alert(formData.nome);
+            const { id, imagem, nome, email, whatsapp, endereco, descricao } = dadosPoint;
+            const [latitude, longitude] = selectedPosition;
+            const items = selectedItems;
+
+            const data = {
+                id,
+                imagem,
+                nome,
+                email,
+                whatsapp,
+                latitude,
+                longitude,
+                endereco,
+                descricao,                
+                items
+            };
+
+            await api.put('points', data);
+
+            alert('Ponto de coleta atualizado com sucesso!');
+
+        } else {
+            const { nome, email, whatsapp, endereco, descricao } = dadosPoint;
+            const [latitude, longitude] = selectedPosition;
+            const items = selectedItems;
+
+            const data = {
+                nome,
+                email,
+                whatsapp,
+                endereco,
+                descricao,
+                latitude,
+                longitude,
+                items
+            };
+
+            await api.post('points', data);
+
+            alert('Ponto de coleta criado!');
         }
 
-        /* const { nome, email, whatsapp, endereco, descricao } = formData;
-        const [latitude, longitude] = selectedPosition;
-        const items = selectedItems;
-
-        const data = {
-            nome,
-            email,
-            whatsapp,
-            endereco,
-            descricao,
-            latitude,
-            longitude,
-            items
-        };
-
-        await api.post('points', data);
-        */
-
-        alert('Ponto de coleta criado!');
+        
 
         navigate('/');
 
@@ -174,6 +195,7 @@ const CreatePoint = () => {
                             type="text"
                             name="nome"
                             id="nome"
+                            defaultValue={dadosPoint.nome}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -185,7 +207,7 @@ const CreatePoint = () => {
                                 type="email"
                                 name="email"
                                 id="email"
-                                value={dadosPoint.email}
+                                defaultValue={dadosPoint.email}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -195,7 +217,7 @@ const CreatePoint = () => {
                                 type="text"
                                 name="whatsapp"
                                 id="whatsapp"
-                                value={dadosPoint.whatsapp}
+                                defaultValue={dadosPoint.whatsapp}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -222,7 +244,7 @@ const CreatePoint = () => {
                             type="text"
                             name="endereco"
                             id="endereco"
-                            value={dadosPoint.endereco}
+                            defaultValue={dadosPoint.endereco}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -232,39 +254,10 @@ const CreatePoint = () => {
                         <textarea
                             name="descricao"
                             id="descricao"
-                            value={dadosPoint.descricao}
+                            defaultValue={dadosPoint.descricao}
                             onChange={handleTextAreaChange}
                         />
                     </div>
-
-                    {/* <div className="field-group">
-                        <div className="field">
-                            <label htmlFor="uf">Estado (UF)</label>
-                            <select name="uf" id="uf"
-                                value={selectedUf}
-                                onChange={handleSelectedUf}
-                            >
-                                <option value="0">Selecione uma UF</option>
-                                {ufs.map(uf => (
-                                    <option key={uf} value={uf}>{uf}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="city">Cidade</label>
-                            <select
-                                name="city"
-                                id="city"
-                                value={selectedCity}
-                                onChange={handleSelectedCity}>
-                                <option value="0">Selecione uma cidade</option>
-                                {cities.map(city => (
-                                    <option key={city} value={city}>{city}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div> */}
                 </fieldset>
 
                 <fieldset>
@@ -285,9 +278,15 @@ const CreatePoint = () => {
                     </ul>
                 </fieldset>
 
-                <button type="submit">
-                    Cadastrar ponto de coleta
-                </button>
+                {pointId ? (
+                    <button type="submit">
+                        Atualizar Ponto de Entrega
+                    </button>
+                ) : (
+                    <button type="submit">
+                        Cadastrar Ponto de Entrega
+                    </button>
+                )}               
 
             </form>
         </div>
