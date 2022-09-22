@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowLeft, FiEdit, FiTrash } from 'react-icons/fi';
 import api from '../../services/api';
-import logo from '../../assets/logo.svg';
+import logo from '../../assets/icon.png';
 
 import './style.css';
 
@@ -42,11 +42,11 @@ const ListPoint = () => {
     return (
         <div id="page-create-point">
             <header>
-                <img src={logo} alt="Ecoleta" />
+                <img src={logo} alt="Conscientiza PN" />
 
                 <Link to="/">
                     <FiArrowLeft />
-                    Voltar para home
+                    Voltar para Home
                 </Link>
             </header>
 

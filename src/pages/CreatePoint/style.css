@@ -6,25 +6,10 @@
   }
   
   #page-create-point header {
-    margin-top: 48px;
-  
+    margin-top: 48px;  
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-  }
-  
-  #page-create-point header a {
-    color: var(--title-color);
-    font-weight: bold;
-    text-decoration: none;
-  
-    display: flex;
-    align-items: center;
-  }
-  
-  #page-create-point header a svg {
-    margin-right: 16px;
-    color: var(--primary-color);
   }
   
   #page-create-point form {

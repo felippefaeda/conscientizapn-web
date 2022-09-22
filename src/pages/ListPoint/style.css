@@ -91,7 +91,7 @@
   #customers-table .delete-column button {
     width: 30px;
     cursor: pointer;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0);
     border: 0;
   }
   

@@ -1,11 +1,12 @@
-import logo from '../../assets/logo.svg';
+
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
-import api from '../../services/api';
 
+import api from '../../services/api';
+import logo from '../../assets/icon.png';
 import './style.css';
 
 type Params = {
@@ -37,24 +38,14 @@ interface Point {
 }
 
 const CreatePoint = () => {
-    const [items, setItems] = useState<Item[]>([]);  
-
-    let { pointId } = useParams<Params>();
-
-    /* const [formData, setFormData] = useState({
-        nome: 'Teste',
-        email: '',
-        whatsapp: '',
-        endereco: '',
-        descricao: "",
-    }); */
-
-    const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
-
     const navigate = useNavigate();
 
+    const [items, setItems] = useState<Item[]>([]);  
+    const [selectedItems, setSelectedItems] = useState<number[]>([]);
+    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     const [dadosPoint, setDadosPoint] = useState<Point>({} as Point);
+
+    let { pointId } = useParams<Params>();
 
     useEffect(() => {
         api.get('items').then(response => {
@@ -162,24 +153,21 @@ const CreatePoint = () => {
             await api.post('points', data);
 
             alert('Ponto de coleta criado!');
-        }
+        }        
 
-        
-
-        navigate('/');
-
+        navigate('/list-point');
     }
 
     return (
         <div id="page-create-point">
             <header>
-                <img src={logo} alt="Ecoleta" />
+                <img src={logo} alt="Conscientiza PN" />
 
                 <Link to="/">
                     <FiArrowLeft />
-                    Voltar para home
+                    Voltar
                 </Link>
-            </header>
+            </header>            
 
             <form onSubmit={handleSubmit}>
                 <h1>Cadastro do PEV<br />(Ponto de coleta seletiva)</h1>
