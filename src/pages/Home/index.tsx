@@ -33,7 +33,7 @@ const Home = () => {
                 <strong>Coletas</strong>
               </Link>
 
-              <Link to="/create-point">
+              <Link to="/list-point">
                 <img src={pev} alt="Ponto de Entrega Voluntára" />
                 <strong>PEV</strong>
               </Link>
