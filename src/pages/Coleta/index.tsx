@@ -15,7 +15,7 @@ const Coleta = () => {
     const [selectedTipo, setSelectedTipo] = useState('0');
     const [selectedDia, setSelectedDia] = useState('-1');
     const [selectedPeriodo, setSelectedPeriodo] = useState("");
-    const [selectedHorario, setSelectedHorario] = useState('0');
+    const [selectedHorario, setSelectedHorario] = useState("00:00:01");
 
     const navigate = useNavigate();
 
@@ -44,9 +44,12 @@ const Coleta = () => {
     };
 
     function handleSelectHorario(event: ChangeEvent<HTMLSelectElement>){
+        
         const horario = event.target.value;
+        alert(horario);
 
-        setSelectedHorario(horario);
+        setSelectedHorario(horario);        
+        alert(selectedHorario);
     };
 
 
@@ -193,6 +196,7 @@ const Coleta = () => {
                                 name="horário" 
                                 min="06:00" 
                                 max="18:00" 
+                                onChange={() => handleSelectHorario}
                                 required 
                             />
                         </div>
