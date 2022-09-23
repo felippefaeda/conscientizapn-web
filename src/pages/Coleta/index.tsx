@@ -1,66 +1,36 @@
-import logo from '../../assets/logo.svg';
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {FiArrowLeft} from 'react-icons/fi';
-import axios from 'axios';
-import { LeafletMouseEvent } from 'leaflet';
-import api from '../../services/api';
 
+import api from '../../services/api';
+import logo from '../../assets/logo.svg';
 import './style.css';
 
-
 const Coleta = () => {
-
-    const [selectedBairro, setSelectedBairro] = useState("");
-    const [selectedTipo, setSelectedTipo] = useState('0');
-    const [selectedDia, setSelectedDia] = useState('-1');
-    const [selectedPeriodo, setSelectedPeriodo] = useState("");
-    const [selectedHorario, setSelectedHorario] = useState("00:00:01");
+    const [formData, setFormData] = useState({        
+        tipo: '0',
+        bairro: '',
+        dia_semana: '-1',
+        periodo: '',
+        horario: "00:00"
+    });
 
     const navigate = useNavigate();
 
-    function handleSelectBairro(event: ChangeEvent<HTMLSelectElement>){
-        const bairro = event.target.value;
+    function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
-        setSelectedBairro(bairro);
-    };
-
-    function handleSelectTipo(event: ChangeEvent<HTMLSelectElement>){
-        const tipo = event.target.value;
-
-        setSelectedTipo(tipo);
-    };
-
-    function handleSelectDia(event: ChangeEvent<HTMLSelectElement>){
-        const dia_semana = event.target.value;
-
-        setSelectedDia(dia_semana);
-    };
-
-    function handleSelectPeriodo(event: ChangeEvent<HTMLSelectElement>){
-        const periodo = event.target.value;
-
-        setSelectedPeriodo(periodo);
-    };
-
-    function handleSelectHorario(event: ChangeEvent<HTMLSelectElement>){
-        
+    function handleSelectHorario(event: ChangeEvent<HTMLInputElement>){
         const horario = event.target.value;
-        alert(horario);
-
-        setSelectedHorario(horario);        
-        alert(selectedHorario);
-    };
-
+        setFormData({ ...formData, horario: horario });
+    }
 
     async function handleSubmit(event: FormEvent){
         event.preventDefault();
 
-        const tipo = selectedTipo;
-        const bairro = selectedBairro;
-        const dia_semana = selectedDia;
-        const periodo = selectedPeriodo;
-        const horario = selectedHorario;
+        const { tipo, bairro, dia_semana, periodo, horario } = formData;
 
         const data = {
             tipo,
@@ -77,17 +47,14 @@ const Coleta = () => {
         navigate('/');
     }
 
-
     return(
         <div id="page-coleta">
             <header>
                 <img src={logo} alt="Ecoleta" />
-
                 <Link to="/">
                     <FiArrowLeft/>
                     Voltar para home
                 </Link>
-
             </header>
 
             <form onSubmit={handleSubmit}>
@@ -103,8 +70,8 @@ const Coleta = () => {
                             <select 
                                 name="tipo" 
                                 id="tipo" 
-                                value={selectedTipo}
-                                onChange={handleSelectTipo}
+                                defaultValue={formData.tipo}
+                                onChange={handleSelectChange}
                             >
                                 <option value="0">Selecione o Tipo de Coleta</option>
                                 <option value="1">Tradicional</option>
@@ -116,8 +83,8 @@ const Coleta = () => {
                             <select 
                                 name="bairro" 
                                 id="bairro" 
-                                value={selectedBairro}
-                                onChange={handleSelectBairro}
+                                defaultValue={formData.bairro}
+                                onChange={handleSelectChange}
                             >
                                 <option value="0">Selecione um Bairro</option>
                                 <option value="Ana Florência">Ana Florência</option>
@@ -162,8 +129,8 @@ const Coleta = () => {
                             <select 
                                 name="dia_semana" 
                                 id="dia_semana" 
-                                value={selectedDia}
-                                onChange={handleSelectDia}
+                                defaultValue={formData.dia_semana}
+                                onChange={handleSelectChange}
                             >
                                 <option value="-1">Selecione o Dia da Semana</option>
                                 <option value="0">Domingo</option>
@@ -180,8 +147,8 @@ const Coleta = () => {
                             <select 
                                 name="periodo" 
                                 id="periodo" 
-                                value={selectedPeriodo}
-                                onChange={handleSelectPeriodo}
+                                defaultValue={formData.periodo}
+                                onChange={handleSelectChange}
                             >
                                 <option value="0">Selecione o Período</option>
                                 <option value="Manhã">Manhã</option>
@@ -194,9 +161,10 @@ const Coleta = () => {
                                 type="time" 
                                 id="horario" 
                                 name="horário" 
-                                min="06:00" 
-                                max="18:00" 
-                                onChange={() => handleSelectHorario}
+                                min="00:00" 
+                                max="23:59" 
+                                defaultValue={formData.horario}
+                                onChange={handleSelectHorario}
                                 required 
                             />
                         </div>
@@ -206,7 +174,6 @@ const Coleta = () => {
                 <button type="submit">
                     Cadastrar dados da coleta
                 </button>
-
             </form>
         </div>
     );
