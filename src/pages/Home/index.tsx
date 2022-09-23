@@ -28,7 +28,7 @@ const Home = () => {
             </p>
 
             <div className="menus">
-              <Link to="/create-point">
+              <Link to="/coleta">
                 <img src={coletas} alt="Cadastro de Coletas de Lixo" />
                 <strong>Coletas</strong>
               </Link>
