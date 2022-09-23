@@ -1,116 +1,89 @@
-import logo from '../../assets/logo.svg';
+
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
-import api from '../../services/api';
 
+import api from '../../services/api';
+import logo from '../../assets/icon.png';
 import './style.css';
+
+type Params = {
+    pointId: string;
+};
 
 interface Item {
     id: number;
     title: string;
-    image_url: string;
+    image_url: string;    
 }
 
-interface IBGEUFResponse {
-    sigla: string;
+interface PointItem {
+    id: number;
+    image: string;
+    title: string;
 }
 
-interface IBGECityResponse {
+interface Point {
+    id: number;
+    imagem: string;
     nome: string;
+    email: string;
+    whatsapp: string;
+    latitude: number;
+    longitude: number;
+    endereco: string;
+    descricao: string;
 }
 
 const CreatePoint = () => {
-    const [items, setItems] = useState<Item[]>([]);
-    //const [ufs, setUfs] = useState<string[]>([]);
-    //const [cities, setCities] = useState<string[]>([]);
-
-    const [formData, setFormData] = useState({
-        nome: '',
-        email: '',
-        whatsapp: '',
-        endereco:'',
-        descricao:"",
-
-    })
-    const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    //const [selectedUf, setSelectedUf] = useState('0');
-    //const [selectedCity, setSelectedCity] = useState('0');
-    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
-    
     const navigate = useNavigate();
-    
+
+    const [items, setItems] = useState<Item[]>([]);  
+    const [selectedItems, setSelectedItems] = useState<number[]>([]);
+    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
+    const [dadosPoint, setDadosPoint] = useState<Point>({} as Point);
+
+    let { pointId } = useParams<Params>();
 
     useEffect(() => {
         api.get('items').then(response => {
             setItems(response.data);
-        })
+        });
+
+        if (pointId !== undefined){
+            api.get(`points/${pointId}`).then((response) => {
+                setDadosPoint(response.data.point);
+
+                setSelectedPosition([response.data.point.latitude, response.data.point.longitude]);
+
+                const vetItems = [ 0 ];
+
+                response.data.items.map((item: PointItem) => {
+                    vetItems.push(item.id);
+                });
+
+                setSelectedItems(vetItems);
+            }).catch(function (error) {
+                alert(error);
+            });
+        }
     }, []);
-
-    // useEffect(() => {
-    //     axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
-    //         const ufInitials = response.data.map(uf => uf.sigla);
-
-    //         setUfs(ufInitials);
-    //     })
-    // }, []);
-
-    // useEffect(() => {
-    //     if (selectedUf === '0') {
-    //         return;
-    //     }
-
-    //     axios
-    //         .get<IBGECityResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`)
-    //         .then(response => {
-    //             const cityNames = response.data.map(city => city.nome);
-
-
-    //             setCities(cityNames);
-    //         });
-    // }, [selectedUf]);
-
-    // function handleSelectedUf(event: ChangeEvent<HTMLSelectElement>) {
-    //     const uf = event.target.value;
-
-    //     setSelectedUf(uf);
-    // }
-
-    // function handleSelectedCity(event: ChangeEvent<HTMLSelectElement>) {
-    //     const city = event.target.value;
-
-    //     setSelectedCity(city);
-    // }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
 
-        setFormData({ ...formData, [name]: value })
+        setDadosPoint({ ...dadosPoint, [name]: value })
     }
 
     function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
         const { name, value } = event.target;
 
-        setFormData({ ...formData, [name]: value })
-    }
-
-    function handleMapClick(event: LeafletMouseEvent) {
-        setSelectedPosition([
-            event.latlng.lat,
-            event.latlng.lng,
-        ])
-    }
-
-    function handleTeste() {
-        console.log("Teste");
+        setDadosPoint({ ...dadosPoint, [name]: value })
     }
 
     function LocationMarker() {
-        // const [position, setPosition] = useState<[number, number]>([0, 0]);
-
         useMapEvents({
             click(e: LeafletMouseEvent) {
                 setSelectedPosition([e.latlng.lat, e.latlng.lng]);
@@ -136,44 +109,65 @@ const CreatePoint = () => {
 
     }
 
-    async function handleSubmit(event: FormEvent){
+    async function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
-        const { nome, email, whatsapp, endereco, descricao } = formData;
-        // const uf = selectedUf;
-        // const city = selectedCity;
-        const [latitude, longitude] = selectedPosition;
-        const items = selectedItems;
+        if (pointId !== undefined){
+            const { id, imagem, nome, email, whatsapp, endereco, descricao } = dadosPoint;
+            const [latitude, longitude] = selectedPosition;
+            const items = selectedItems;
 
-        const data = {
-            nome,
-            email,
-            whatsapp,
-            endereco,
-            descricao,
-            latitude,
-            longitude,
-            items
-        };
+            const data = {
+                id,
+                imagem,
+                nome,
+                email,
+                whatsapp,
+                latitude,
+                longitude,
+                endereco,
+                descricao,                
+                items
+            };
 
-        await api.post('points', data);
+            await api.put('points', data);
 
-        alert('Ponto de coleta criado!');
+            alert('Ponto de coleta atualizado com sucesso!');
 
-        navigate('/');
+        } else {
+            const { nome, email, whatsapp, endereco, descricao } = dadosPoint;
+            const [latitude, longitude] = selectedPosition;
+            const items = selectedItems;
 
+            const data = {
+                nome,
+                email,
+                whatsapp,
+                endereco,
+                descricao,
+                latitude,
+                longitude,
+                items
+            };
+
+            await api.post('points', data);
+
+            alert('Ponto de coleta criado!');
+        }        
+
+        navigate('/list-point');
     }
 
     return (
         <div id="page-create-point">
             <header>
-                <img src={logo} alt="Ecoleta" />
+                <img src={logo} alt="Conscientiza PN" />
 
                 <Link to="/">
                     <FiArrowLeft />
-                    Voltar para home
+                    Voltar
                 </Link>
-            </header>
+            </header>            
 
             <form onSubmit={handleSubmit}>
                 <h1>Cadastro do PEV<br />(Ponto de coleta seletiva)</h1>
@@ -189,6 +183,7 @@ const CreatePoint = () => {
                             type="text"
                             name="nome"
                             id="nome"
+                            defaultValue={dadosPoint.nome}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -200,6 +195,7 @@ const CreatePoint = () => {
                                 type="email"
                                 name="email"
                                 id="email"
+                                defaultValue={dadosPoint.email}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -209,6 +205,7 @@ const CreatePoint = () => {
                                 type="text"
                                 name="whatsapp"
                                 id="whatsapp"
+                                defaultValue={dadosPoint.whatsapp}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -235,6 +232,7 @@ const CreatePoint = () => {
                             type="text"
                             name="endereco"
                             id="endereco"
+                            defaultValue={dadosPoint.endereco}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -244,38 +242,24 @@ const CreatePoint = () => {
                         <textarea
                             name="descricao"
                             id="descricao"
+                            defaultValue={dadosPoint.descricao}
                             onChange={handleTextAreaChange}
                         />
                     </div>
+                </fieldset>
 
-                    {/* <div className="field-group">
-                        <div className="field">
-                            <label htmlFor="uf">Estado (UF)</label>
-                            <select name="uf" id="uf"
-                                value={selectedUf}
-                                onChange={handleSelectedUf}
-                            >
-                                <option value="0">Selecione uma UF</option>
-                                {ufs.map(uf => (
-                                    <option key={uf} value={uf}>{uf}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="field">
-                            <label htmlFor="city">Cidade</label>
-                            <select
-                                name="city"
-                                id="city"
-                                value={selectedCity}
-                                onChange={handleSelectedCity}>
-                                <option value="0">Selecione uma cidade</option>
-                                {cities.map(city => (
-                                    <option key={city} value={city}>{city}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div> */}
+                <fieldset>
+                    <legend>
+                        <h2>Imagem</h2>
+                    </legend>
+                    <div className="field">
+                        <img src={`https://conscientizapn.s3.sa-east-1.amazonaws.com/PEV/${dadosPoint.imagem}.jpeg`} alt="" />
+                        <button
+                            type="button"
+                        >
+                            Upload Imagem
+                        </button>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -296,9 +280,15 @@ const CreatePoint = () => {
                     </ul>
                 </fieldset>
 
-                <button type="submit">
-                    Cadastrar ponto de coleta
-                </button>
+                {pointId ? (
+                    <button type="submit">
+                        Atualizar Ponto de Entrega
+                    </button>
+                ) : (
+                    <button type="submit">
+                        Cadastrar Ponto de Entrega
+                    </button>
+                )}               
 
             </form>
         </div>
