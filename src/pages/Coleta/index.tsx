@@ -6,6 +6,16 @@ import api from '../../services/api';
 import logo from '../../assets/logo.svg';
 import './style.css';
 
+interface Coleta{
+    id: number;
+    tipo:number;
+    bairro:string;
+    dia_semana:number;
+    periodo:string;
+    horario:number;
+
+}
+
 const Coleta = () => {
     const [formData, setFormData] = useState({        
         tipo: '0',
@@ -17,10 +27,17 @@ const Coleta = () => {
 
     const navigate = useNavigate();
 
+    const [dadosColeta, setDadosColeta] = useState<Coleta>({} as Coleta);
+
     function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+        setDadosColeta({ ...dadosColeta, [name]: value });
     }
+
+    // function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
+    //     const { name, value } = event.target;
+    //     setFormData({ ...formData, [name]: value });
+    // }
 
     function handleSelectHorario(event: ChangeEvent<HTMLInputElement>){
         const horario = event.target.value;

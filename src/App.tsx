@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import ListPoint from './pages/ListPoint';
 import CreatePoint from './pages/CreatePoint';
 import Coleta from './pages/Coleta';
+import ListColetas from './pages/ListColetas';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
      <Routes>
        <Route path='/' element={<Home/>}/>       
        <Route path='/coleta' element={<Coleta/>}/>
+       <Route path='/list-coleta' element={<ListColetas/>}/>
        <Route path='/list-point' element={<ListPoint/>}/>
        <Route path='/create-point' element={<CreatePoint/>}/>
        <Route path='/create-point/:pointId' element={<CreatePoint/>}/>       
