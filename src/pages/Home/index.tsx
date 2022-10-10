@@ -28,7 +28,7 @@ const Home = () => {
             </p>
 
             <div className="menus">
-              <Link to="/coleta">
+              <Link to="/list-coleta">
                 <img src={coletas} alt="Cadastro de Coletas de Lixo" />
                 <strong>Coletas</strong>
               </Link>
