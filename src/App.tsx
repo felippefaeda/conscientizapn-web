@@ -7,6 +7,7 @@ import ListPoint from './pages/ListPoint';
 import CreatePoint from './pages/CreatePoint';
 import Coleta from './pages/Coleta';
 import ListColetas from './pages/ListColetas';
+import CreateOcorrencia from './pages/CreateOcorrencia';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
        <Route path='/list-point' element={<ListPoint/>}/>
        <Route path='/create-point' element={<CreatePoint/>}/>
        <Route path='/create-point/:pointId' element={<CreatePoint/>}/>       
+       <Route path='/create-ocorrencia' element={<CreateOcorrencia/>}/>       
      </Routes>
    </Router>
   );

@@ -6,13 +6,13 @@ import logo from '../../assets/icon.png';
 
 import './style.css';
 
-interface Coleta{
+interface Coleta {
     id: number;
-    tipo:number;
-    bairro:string;
-    dia_semana:number;
-    periodo:string;
-    horario:number;
+    tipo: number;
+    bairro: string;
+    dia_semana: number;
+    periodo: string;
+    horario: number;
 }
 
 const ListColetas = () => {
@@ -24,7 +24,7 @@ const ListColetas = () => {
         buscarColetas();
     }, []);
 
-    async function buscarColetas(){
+    async function buscarColetas() {
         await api.get(`coleta/${bairro}`).then(response => {
             setColetas(response.data);
         });
@@ -63,13 +63,13 @@ const ListColetas = () => {
             <main>
                 <h1>Lista de Coletas por Bairro</h1>
 
-                <p>Bairro selecionado: {bairro} </p> 
+                <p>Bairro selecionado: {bairro} </p>
 
                 <div className="field">
                     <label htmlFor="bairro">Selecione um Bairro: </label>
-                    <select 
-                        name="bairro" 
-                        id="bairro" 
+                    <select
+                        name="bairro"
+                        id="bairro"
                         defaultValue={"Esplanada"}
                         onChange={handleSelectChange}
                     >
