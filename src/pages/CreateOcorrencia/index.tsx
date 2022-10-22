@@ -164,7 +164,7 @@ const CreateOcorrencia = () => {
             </header>
 
             <form onSubmit={handleSubmit}>
-                <h1>Cadastrar Ocorrência</h1>
+                <h1>Cidadão Fiscal - Ocorrência</h1>
 
                 <fieldset>
                     <legend>

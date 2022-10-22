@@ -38,7 +38,7 @@ const Home = () => {
                 <strong>PEV</strong>
               </Link>
 
-              <Link to="/list-coleta">
+              <Link to="/list-ocorrencias">
                 <img src={fiscal} alt="Cidadão Fiscal" />
                 <strong>Cidadão Fiscal</strong>
               </Link>
