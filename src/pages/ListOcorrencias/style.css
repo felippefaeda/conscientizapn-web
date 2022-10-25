@@ -1,0 +1,149 @@
+#page-list-ocorrencias {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 0 auto;
+}
+
+#page-list-ocorrencias header {
+  margin-top: 48px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#page-list-ocorrencias header a {
+  color: var(--title-color);
+  font-weight: bold;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+}
+
+#page-list-ocorrencias header a svg {
+  margin-right: 16px;
+  color: var(--primary-color);
+}
+
+#page-list-ocorrencias main {
+  margin: 60px auto;
+  padding: 54px;
+  max-width: 950px;
+  background: #FFF;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#page-list-ocorrencias main h1 {
+  font-size: 28px;
+}
+
+#page-list-ocorrencias .new-pev {
+  width: 260px;
+  height: 56px;
+  background: var(--primary-color);
+  border-radius: 8px;
+  text-decoration: none;
+
+  font-weight: bold;
+  font-size: 16px;
+
+  align-self: flex-end;
+  margin-top: 40px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#page-list-ocorrencias .new-pev strong {
+  color: #FFF;
+  font-size: 16px;
+}
+
+#page-list-ocorrencias .new-pev:hover {
+  background: #2FB86E;
+}
+
+#page-list-ocorrencias .field select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  flex: 1;
+  background: #F0F0F5;
+  border-radius: 8px;
+  border: 0;
+  padding: 16px 10px;
+  font-size: 16px;
+  color: #6C6C80;
+  margin-top: 10px;
+}
+
+#customers-table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+#customers-table td, #customers-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers-table .edit-column {
+  width: 30px;
+}
+
+#customers-table .delete-column button {
+  width: 30px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+}
+
+#customers-table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+#customers-table tr:hover {background-color: #ddd;}
+
+#customers-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: lightgrey;
+  color: black;
+}
+
+#page-list-ocorrencias .field-group {
+  flex: 1;
+  display: flex;
+}
+
+#page-list-ocorrencias .field {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+#page-coleta .field :disabled {
+  cursor: not-allowed;
+}
+
+#page-list-ocorrencias .field-group .field + .field {
+  margin-left: 24px;
+}
+
+#page-list-ocorrencias .field-group select + select {
+  margin-left: 24px;
+}

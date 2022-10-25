@@ -28,7 +28,7 @@ const Home = () => {
             </p>
 
             <div className="menus">
-              <Link to="/coleta">
+              <Link to="/list-coleta">
                 <img src={coletas} alt="Cadastro de Coletas de Lixo" />
                 <strong>Coletas</strong>
               </Link>
@@ -38,7 +38,7 @@ const Home = () => {
                 <strong>PEV</strong>
               </Link>
 
-              <Link to="/create-point">
+              <Link to="/list-ocorrencias">
                 <img src={fiscal} alt="Cidadão Fiscal" />
                 <strong>Cidadão Fiscal</strong>
               </Link>
