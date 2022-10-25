@@ -7,7 +7,7 @@ import logo from '../../assets/icon.png';
 import './style.css';
 
 interface Coleta {
-    id: number;
+    codigo: number;
     tipo: number;
     bairro: string;
     dia_semana: number;
@@ -19,10 +19,12 @@ const ListColetas = () => {
 
     const [coletas, setColetas] = useState<Coleta[]>([]);
     const [bairro, setBairro] = useState("Esplanada");
+    const [load, setLoad] = useState(true);
 
     useEffect(() => {
         buscarColetas();
-    }, []);
+
+    }, [load]);
 
     async function buscarColetas() {
         await api.get(`coleta/${bairro}`).then(response => {
@@ -30,13 +32,13 @@ const ListColetas = () => {
         });
     }
 
-    function deleteColeta(id: number) {
+    function deleteColeta(codigo: number) {
         let resultado = window.confirm("Deseja excluir a coleta?");
 
         if (resultado) {
-            setColetas(coletas.filter(coleta => coleta.id !== id));
+            setColetas(coletas.filter(coleta => coleta.codigo !== codigo));
 
-            api.delete(`coleta/${id}`)
+            api.delete(`coleta/${codigo}`)
                 .then(() => alert("Coleta Excluída com Sucesso!!!"))
                 .catch(error => alert(`Erro ao excluir a Coleta. Error: ${error.message}`));
         }
@@ -46,7 +48,8 @@ const ListColetas = () => {
         const { value } = event.target;
         setBairro(value);
 
-        buscarColetas();
+        setLoad(!load);
+        // buscarColetas();
     }
 
     return (
@@ -62,8 +65,6 @@ const ListColetas = () => {
 
             <main>
                 <h1>Lista de Coletas por Bairro</h1>
-
-                <p>Bairro selecionado: {bairro} </p>
 
                 <div className="field">
                     <label htmlFor="bairro">Selecione um Bairro: </label>
@@ -118,12 +119,18 @@ const ListColetas = () => {
                         <th></th>
                     </tr>
                     {coletas.map(coleta => (
-                        <tr key={coleta.id}>
+                        <tr key={coleta.codigo}>
                             <td>{coleta.bairro}</td>
-                            <td>{coleta.dia_semana}</td>
-                            <td>{coleta.tipo}</td>
+                            <td>{(coleta.dia_semana === 1) ? "Segunda-Feira" : 
+                                 (coleta.dia_semana === 2) ? "Terça-feira" : 
+                                 (coleta.dia_semana === 3) ? "Quarta-feira" : 
+                                 (coleta.dia_semana === 4) ? "Quinta-feira" : 
+                                 (coleta.dia_semana === 5) ? "Sexta-feira" : 
+                                 (coleta.dia_semana === 6) ? "Sábado" : "Domingo"   
+                                }</td>
+                            <td>{(coleta.tipo == 1) ? "Tradicional" : "Seletiva" }</td>
                             <td className="delete-column">
-                                <button onClick={() => deleteColeta(coleta.id)}>
+                                <button onClick={() => deleteColeta(coleta.codigo)}>
                                     <FiTrash size={24} color="rgba(0, 0, 0, 0.8)" />
                                 </button>
                             </td>
