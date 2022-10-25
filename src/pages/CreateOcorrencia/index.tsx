@@ -14,55 +14,38 @@ type Params = {
 
 interface Ocorrencia {
     id: number;
-    dataa: number;
-    endereco: string;
-    status: string;
     descricao: string;
+    foto: string;
     latitude: number;
     longitude: number;
-    foto: string
+    reportacoes: number;
+    nomeUsuario: string;
+    bairro: string;
+    rua: string;
+    status: number;
+    data: string; 
 }
 
 const CreateOcorrencia = () => {
-
-    const [formData, setFormData] = useState({
-        status: '0'
-    });
-
-
     const navigate = useNavigate();
 
-    // const [items, setItems] = useState<Item[]>([]);  
-    // const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     const [dadosOcorrencia, setDadosOcorrencia] = useState<Ocorrencia>({} as Ocorrencia);
+    const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
 
     let { ocorrenciaId } = useParams<Params>();
 
-    // useEffect(() => {
-    //     api.get('items').then(response => {
-    //         setItems(response.data);
-    //     });
+    useEffect(() => {
 
-    if (ocorrenciaId !== undefined) {
-        api.get(`ocorrencia/${ocorrenciaId}`).then((response) => {
-            setDadosOcorrencia(response.data.ocorrencia);
+        if (ocorrenciaId !== undefined){
+            api.get(`ocorrencias/${ocorrenciaId}`).then((response) => {
+                setDadosOcorrencia(response.data);
+                setSelectedPosition([response.data.latitude, response.data.longitude]);
+            }).catch(function (error) {
+                alert(error);
+            });
+        }
+    }, []);
 
-            setSelectedPosition([response.data.ocorrencia.latitude, response.data.ocorrencia.longitude]);
-        })
-
-    };
-
-    //     const vetItems = [ 0 ];
-
-    //     response.data.items.map((item: PointItem) => {
-    //         vetItems.push(item.id);
-    //     });
-
-    //     setSelectedItems(vetItems);
-    // }).catch(function (error) {
-    //     alert(error);
-    // });
     function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
         const { name, value } = event.target;
         setDadosOcorrencia({ ...dadosOcorrencia, [name]: value });
@@ -92,61 +75,20 @@ const CreateOcorrencia = () => {
         )
     }
 
-    // function handleSelectItem(id: number) {
-    //     const alreadySelected = selectedItems.findIndex(item => item === id);
-
-    //     if (alreadySelected >= 0) {
-    //         const filteredItems = selectedItems.filter(item => item !== id)
-
-    //         setSelectedItems(filteredItems);
-    //     } else {
-    //         setSelectedItems([...selectedItems, id]);
-
-    //     }
-
-    // }
-
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
         if (ocorrenciaId !== undefined) {
-            const { id, dataa, endereco, status, descricao, foto } = dadosOcorrencia;
-            const [latitude, longitude] = selectedPosition;
-            // const items = selectedItems;
+            const { id, status } = dadosOcorrencia;
 
             const data = {
                 id,
-                dataa,
-                endereco,
-                status,
-                descricao,
-                latitude,
-                longitude,
-                foto
-
+                status
             };
 
-            await api.put('ocorrencias', data);
+            await api.put(`ocorrencias/${ocorrenciaId}`, data);
 
-            alert('Ocorrência atualizada com sucesso!');
-
-        } else {
-            const { dataa, endereco, status, descricao } = dadosOcorrencia;
-            const [latitude, longitude] = selectedPosition;
-            // const items = selectedItems;
-
-            const data = {
-                dataa,
-                endereco,
-                status,
-                descricao,
-                latitude,
-                longitude,
-            };
-
-            await api.post('ocorrencias', data);
-
-            alert('Ocorrência criada!');
+            alert('Status da Ocorrência atualizado com sucesso!');
         }
 
         navigate('/list-ocorrencias');
@@ -171,29 +113,28 @@ const CreateOcorrencia = () => {
                         <h2>Dados</h2>
                     </legend>
 
-
-
                     <div className="field-group">
-
                         <div className="field">
                             <label htmlFor="name">Data</label>
                             <input
-                                type="date"
-                                name="dataa"
-                                id="dataa"
-                                defaultValue={dadosOcorrencia.dataa}
+                                type="text"
+                                name="data"
+                                id="data"
+                                defaultValue={dadosOcorrencia.data}
                                 onChange={handleInputChange}
+                                readOnly
                             />
                         </div>
 
                         <div className="field">
-                            <label htmlFor="name">Endereço</label>
+                            <label htmlFor="name">Bairro</label>
                             <input
                                 type="text"
-                                name="endereco"
-                                id="endereco"
-                                defaultValue={dadosOcorrencia.endereco}
+                                name="bairro"
+                                id="bairro"
+                                defaultValue={dadosOcorrencia.bairro}
                                 onChange={handleInputChange}
+                                readOnly
                             />
                         </div>
 
@@ -202,36 +143,27 @@ const CreateOcorrencia = () => {
                             <select
                                 name="status"
                                 id="status"
-                                defaultValue={formData.status}
+                                value={dadosOcorrencia.status}
                                 onChange={handleSelectChange}
                             >
-                                <option value="0">Selecione o Período</option>
-                                <option value="Em análise">Em análise</option>
-                                <option value="Resolvido">Resolvido</option>
+                                <option value="0">0 - Em Aberto</option>
+                                <option value="1">1 - Em Análise</option>
+                                <option value="2">2 - Resolvido</option>
                             </select>
                         </div>
+                    </div>
 
-                        {/* <div className="field">
-                            <label htmlFor="email">E-mail</label>
-                            <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                defaultValue={dadosPoint.email}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className="field">
-                            <label htmlFor="whatsapp">Whatsapp</label>
+                    <div className="field">
+                            <label htmlFor="name">Rua</label>
                             <input
                                 type="text"
-                                name="whatsapp"
-                                id="whatsapp"
-                                defaultValue={dadosPoint.whatsapp}
+                                name="rua"
+                                id="rua"
+                                defaultValue={dadosOcorrencia.rua}
                                 onChange={handleInputChange}
+                                readOnly
                             />
-                        </div> */}
-                    </div>
+                        </div>
 
                     <div className="field">
                         <label htmlFor="descricao">Descriçao</label>
@@ -240,6 +172,7 @@ const CreateOcorrencia = () => {
                             id="descricao"
                             defaultValue={dadosOcorrencia.descricao}
                             onChange={handleTextAreaChange}
+                            readOnly
                         />
                     </div>
 
@@ -258,8 +191,6 @@ const CreateOcorrencia = () => {
                         />
                         <LocationMarker />
                     </MapContainer>
-
-
                 </fieldset>
 
                 <fieldset>
@@ -267,43 +198,16 @@ const CreateOcorrencia = () => {
                         <h2>Imagem</h2>
                     </legend>
                     <div className="field">
-                        <img src={`https://conscientizapn.s3.sa-east-1.amazonaws.com/PEV/${dadosOcorrencia.foto}.jpeg`} alt="" />
-                        <button
-                            type="button"
-                        >
-                            Upload Imagem
-                        </button>
+                        <img 
+                            src={`https://conscientizapn.s3.sa-east-1.amazonaws.com/${dadosOcorrencia.foto}.jpg`} 
+                            alt=""                          
+                        />                        
                     </div>
                 </fieldset>
-
-                {/* <fieldset>
-                    <legend>
-                        <h2>Ítems de coleta</h2>
-                        <span>Selecione um ou mais itens abaixo</span>
-                    </legend>
-                    <ul className="items-grid">
-                        {items.map(items => (
-                            <li key={items.id}
-                                onClick={() => handleSelectItem(items.id)}
-                                className={selectedItems.includes(items.id) ? 'selected' : ''}
-                            >
-                                <img src={items.image_url} alt={items.title} />
-                                <span>{items.title}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </fieldset> */}
-
-                {ocorrenciaId ? (
-                    <button type="submit">
-                        Atualizar Ocorrência
-                    </button>
-                ) : (
-                    <button type="submit">
-                        Alterar Status
-                    </button>
-                )}
-
+                
+                <button type="submit">
+                    Atualizar Ocorrência
+                </button>
             </form>
         </div>
     );

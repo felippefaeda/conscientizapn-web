@@ -20,7 +20,7 @@ function App() {
        <Route path='/list-point' element={<ListPoint/>}/>
        <Route path='/create-point' element={<CreatePoint/>}/>
        <Route path='/create-point/:pointId' element={<CreatePoint/>}/>       
-       <Route path='/create-ocorrencia' element={<CreateOcorrencia/>}/>            
+       <Route path='/create-ocorrencia/:ocorrenciaId' element={<CreateOcorrencia/>}/>            
        <Route path='/list-ocorrencias' element={<ListOcorrencias/>}/>            
      </Routes>
    </Router>

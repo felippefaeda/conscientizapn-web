@@ -8,65 +8,44 @@ import './style.css';
 
 interface Ocorrencia {
     id: number;
-    dataa: number;
-    endereco: string;
-    status: string;
     descricao: string;
+    foto: string;
     latitude: number;
     longitude: number;
-    foto: string
+    reportacoes: number;
+    nomeUsuario: string;
+    bairro: string;
+    rua: string;
+    status: number;
+    data: number; 
 }
 
 const ListOcorrencias = () => {
     const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>([])
     const [bairro, setBairro] = useState("Esplanada");
+    const [status, setStatus] = useState("Todos");
+    const [load, setLoad] = useState(true);
 
     useEffect(() => {
         buscarOcorrencias();
-    }, []);
+
+    }, [load]);
 
     async function buscarOcorrencias() {
-        await api.get(`coleta/${bairro}`).then(response => {
+        await api.get(`ocorrencias/${bairro}/${status}`).then(response => {
             setOcorrencias(response.data);
         });
     }
 
-    // useEffect(()=>{
-    //     api.get('all-ocorrencias').then(response =>{
-    //         setOcorrencias(response.data);
-    //     });
-    // }, []);
-
-    // function deleteOcorrencia(id:number, endereco: string){
-    //     let resultado = window.confirm("Deseja excluir a ocorrência"+ id +" - "+ endereco + "?");
-
-    //     if(resultado){
-    //         setOcorrencias(ocorrencias.filter(ocorrencia => ocorrencia.id !== id));
-
-    //         api.delete(`points/${id}`)
-    //             .then(()=> alert("Ocorrência Excluída com Sucesso!!!"))
-    //             .catch(error => alert (`Error ao excluir a ocorrência. Error: ${error.message}`));
-    //     }
-    // }
-
-    function deleteOcorrencia(id: number) {
-        let resultado = window.confirm("Deseja excluir a coleta?");
-
-        if (resultado) {
-            setOcorrencias(ocorrencias.filter(ocorrencia => ocorrencia.id !== id));
-
-            api.delete(`create-ocorrencia/${id}`)
-                .then(() => alert("Ocorrência com Sucesso!!!"))
-                .catch(error => alert(`Erro ao excluir a Ocorrência. Error: ${error.message}`));
-        }
-    }
-
     function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
-        const { value } = event.target;
-        setBairro(value);
+        const { name, value } = event.target;
 
-        buscarOcorrencias();
+        if(name == "bairro")
+            setBairro(value);
+        else if(name == "status")
+            setStatus(value);
 
+        setLoad(!load);
     }
 
     return (
@@ -78,15 +57,11 @@ const ListOcorrencias = () => {
                     <FiArrowLeft />
                     Voltar para Home
                 </Link>
-
             </header>
 
             <main>
                 <h1>Cidadão Fiscal - Ocorrências</h1>
-
                 <br />
-
-
                 <div className="field-group">
                     <div className="field">
                         <label htmlFor="bairro">Selecione um Bairro: </label>
@@ -97,6 +72,7 @@ const ListOcorrencias = () => {
                             onChange={handleSelectChange}
                         >
                             <option value="0">Selecione um Bairro</option>
+                            <option value="Todos">Todos os Bairros</option>
                             <option value="Ana Florência">Ana Florência</option>
                             <option value="Área Rural de Ponte Nova">Área Rural de Ponte Nova</option>
                             <option value="Bom Pastor">Bom Pastor</option>
@@ -134,15 +110,17 @@ const ListOcorrencias = () => {
                     </div>
 
                     <div className="field">
-                        <label htmlFor="bairro">Selecione um Bairro: </label>
+                        <label htmlFor="status">Selecione um Status: </label>
                         <select
-                            name="bairro"
-                            id="bairro"
-                            defaultValue={"Esplanada"}
+                            name="status"
+                            id="status"
+                            defaultValue={"Todos"}
                             onChange={handleSelectChange}
                         >
-                            <option value="Em Análise">Em Análise</option>
-                            <option value="Resolvido">Resolvido</option>
+                            <option value="Todos">Todos os Status</option>
+                            <option value="0">0 - Em Aberto</option>
+                            <option value="1">1 - Em Análise</option>
+                            <option value="2">2 - Resolvido</option>
                         </select>
                     </div>
                 </div>
@@ -150,33 +128,30 @@ const ListOcorrencias = () => {
                 <table id="customers-table">
                     <tr>
                         <th>Data</th>
+                        <th>Bairro</th>
+                        <th>Rua</th>
                         <th>Descrição</th>
                         <th>Status</th>
-                        <th></th>
                         <th></th>
                     </tr>
                     {ocorrencias.map(ocorrencia => (
                         <tr key={ocorrencia.id}>
-                            <td>{ocorrencia.id}</td>
-                            <td>{ocorrencia.dataa}</td>
-                            <td>{ocorrencia.endereco}</td>
-                            <td>{ocorrencia.status}</td>
+                            <td>{ocorrencia.data}</td>
+                            <td>{ocorrencia.bairro}</td>
+                            <td>{ocorrencia.rua}</td>
+                            <td>{ocorrencia.descricao}</td>
+                            <td>{(ocorrencia.status === 0) ? "Em aberto" : 
+                                 (ocorrencia.status === 1) ? "Em Análise" : "Concluído"   
+                                }
+                            </td>
                             <td className="edit-column">
                                 <Link to={`/create-ocorrencia/${ocorrencia.id}`}>
-                                    <FiEdit size={24} color="rgba(0, 0, 0, 0)" />
+                                    <FiEdit size={24} color="rgba(0, 0, 0, 0.8)" />
                                 </Link>
-                            </td>
-                            <td className="delete-column">
-                                <button onClick={() => deleteOcorrencia(ocorrencia.id)}>
-                                    <FiTrash size={24} color="rgba(0, 0, 0, 0.8)" />
-                                </button>
                             </td>
                         </tr>
                     ))}
                 </table>
-                <Link className="new-pev" to="/create-ocorrencia">
-                    <strong>Nova ocorrência</strong>
-                </Link>
             </main>
 
         </div>
